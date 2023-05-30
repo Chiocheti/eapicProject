@@ -22,7 +22,7 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
-      cpf: {
+      rg: {
         allowNull: false,
         type: Sequelize.STRING,
         onUpdate: 'CASCADE',
