@@ -1,33 +1,68 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useState } from 'react';
 import './App.css'
+import XLSX from 'xlsx';
 
 function App() {
-  const [count, setCount] = useState(0)
+
+  const [data, setData] = useState();
+
+  function baixarPlanilha() {
+    const wb = XLSX.utils.book_new();
+
+    wb.Props = {
+      Title: 'Relatório',
+      Subject: 'Teste',
+      Author: 'Chiocheti',
+      CreatedDate: new Date(),
+    };
+
+    wb.SheetNames.push('Relatório 1');
+
+    const data = [
+      ['Titulo 1', 'Titulo 2'],
+      ['1-1', '1-2'],
+      ['2-1', '2-2'],
+      ['3-1', '3-2'],
+    ];
+
+    const ws = XLSX.utils.aoa_to_sheet(data);
+
+    wb.Sheets['Relatório 1'] = ws;
+
+    XLSX.writeFile(wb, 'teste.xlsx', { bookType: 'xlsx', type: 'binary' });
+  }
+
+  function lerPlanilha(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      const data = new Uint8Array(e.target.result);
+
+      const workbook = XLSX.read(data, { type: 'array' });
+
+      const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+
+      const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+      console.log(jsonData);
+
+      setData(jsonData);
+    }
+    reader.readAsArrayBuffer(file);
+  }
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <button onClick={baixarPlanilha}>
+        Baixar planilha
+      </button>
+
+      <button onClick={() => console.log(data[1])}>
+        Mostrar Data
+      </button>
+
+      <input type="file" onChange={() => lerPlanilha(event)} />
     </>
   )
 }
