@@ -9,7 +9,6 @@ module.exports = (sequelize, DataTypes) => {
   }
   Cpf.init({
     cpf: DataTypes.STRING,
-    name: DataTypes.STRING,
   },
     {
       sequelize,
