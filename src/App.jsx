@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import './App.css'
 import XLSX from 'xlsx';
+import { api } from './services/api';
 
 function App() {
 
@@ -19,10 +20,13 @@ function App() {
     wb.SheetNames.push('Relatório 1');
 
     const data = [
-      ['Titulo 1', 'Titulo 2'],
-      ['1-1', '1-2'],
-      ['2-1', '2-2'],
-      ['3-1', '3-2'],
+      ['Nome', 'CPF'],
+      ['Caio', '11111'],
+      ['Gabriel', '22222'],
+      ['Marcelo', '33333'],
+      ['Samuel', '44444'],
+      ['Zé', '55555'],
+      ['Urubu', '66666'],
     ];
 
     const ws = XLSX.utils.aoa_to_sheet(data);
@@ -49,7 +53,35 @@ function App() {
 
       setData(jsonData);
     }
+
     reader.readAsArrayBuffer(file);
+  }
+
+  function salvarPlanilha() {
+    let namePosition = '';
+    let cpfPosition = '';
+
+    for (let i = 0; i < data[0].length; i++) {
+      console.log("Data ->");
+      console.log(data[0][i]);
+
+      if (data[0][i] === "Nome") {
+        namePosition = i;
+      }
+      if (data[0][i] === "CPF") {
+        cpfPosition = i;
+      }
+    }
+
+    data.forEach(async (element) => {
+      const elementName = element[namePosition];
+      const elementCpf = element[cpfPosition];
+      try {
+        await api.post('/cpf', { name: elementName, cpf: elementCpf });
+      } catch (error) {
+        console.log(error);
+      }
+    });
   }
 
   return (
@@ -60,6 +92,10 @@ function App() {
 
       <button onClick={() => console.log(data[1])}>
         Mostrar Data
+      </button>
+
+      <button onClick={() => salvarPlanilha()}>
+        Salvar Data
       </button>
 
       <input type="file" onChange={() => lerPlanilha(event)} />
