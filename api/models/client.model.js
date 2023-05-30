@@ -4,12 +4,13 @@ const { v4: uuidv4 } = require('uuid');
 module.exports = (sequelize, DataTypes) => {
   class Client extends Model {
     static associate(models) {
-      this.belongsTo(models.Show, {as: 'clients', foreignKey: 'showId'})
+      this.belongsTo(models.Show, {as: 'shows', foreignKey: 'showId'});
      }
   }
   Client.init({
+    show_id: DataTypes.UUID,
     name: DataTypes.STRING,
-    rg: DataTypes.DATE,
+    cpf: DataTypes.STRING,
   },
     {
       sequelize,

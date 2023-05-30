@@ -1,8 +1,7 @@
-'use strict';
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Clients', {
+    await queryInterface.createTable('clients', {
       id: {
         allowNull: false,
         primaryKey: true,
@@ -23,13 +22,15 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
+      cpf: {
+        allowNull: false,
+        type: Sequelize.STRING,
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
+      },
       name: {
         allowNull: false,
         type: Sequelize.STRING
-      },
-      rg: {
-        allowNull: false,
-        type: Sequelize.STRING,
       },
       created_at: {
         allowNull: false,
@@ -44,6 +45,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Clients');
+    await queryInterface.dropTable('clients');
   }
 };
