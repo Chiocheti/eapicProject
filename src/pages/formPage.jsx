@@ -25,16 +25,9 @@ export default function Form() {
 
   const [shows, setShows] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [position, setPosition] = useState(1);
   const [statusMessage, setStatusMessage] = useState();
-  const [statusShow1, setStatusShow1] = useState({
-    message: '',
-    status: false,
-  });
-  const [statusShow2, setStatusShow2] = useState({
-    message: '',
-    status: false,
-  });
+  const [statusShow1, setStatusShow1] = useState();
+  const [statusShow2, setStatusShow2] = useState();
 
   useEffect(() => {
     async function fetchData() {
@@ -42,7 +35,6 @@ export default function Form() {
         const { data } = await api.get('/show/open');
         setShows(data);
         setLoading(false);
-        console.log(data);
       } catch (error) {
         console.log(error);
       }
@@ -103,101 +95,32 @@ export default function Form() {
       status: false,
     });
 
-    console.log(data);
-
     const { cpf, phone, show_id01, name01, rg01, show_id02, name02, rg02 } = data;
 
     let client = { cpf, phone, show_id: show_id01, name: name01, rg: rg01 }
 
-    console.log(client);
-
-    let response = '';
-
-    if (!statusShow1.status) {
-      response = await saveClient(client);
-    }
-    console.log(response);
+    let response = await saveClient(client);
 
     if (response.status === 'not_found' || response.status === 'expired') {
       setStatusMessage(response.message);
     }
 
-    if (response.status === 'blocked') {
-      setStatusShow1({
-        message: response.message,
-        status: false,
-      });
+    if (response.status === 'blocked' || response.status === 'success') {
+      setStatusShow1(response.message);
     }
 
-    if (response.status === 'success') {
-      setStatusShow1({
-        message: response.message,
-        status: true,
-      });
+    client = { cpf, phone, show_id: show_id02, name: name02, rg: rg02 };
+
+    response = await saveClient(client);
+
+    if (response.status === 'blocked' || response.status === 'success') {
+      setStatusShow2(response.message);
     }
-
-    client = { cpf, phone, show_id: show_id02, name: name02, rg: rg02 }
-
-    console.log(client);
-
-    if (!statusShow2.status) {
-      response = await saveClient(client);
-    }
-
-    console.log(response);
-
-    if (response.status === 'blocked') {
-      setStatusShow2({
-        message: response.message,
-        status: false,
-      });
-    }
-
-    if (response.status === 'success') {
-      setStatusShow2({
-        message: response.message,
-        status: true,
-      });
-    }
-
-    // try {
-    //   const { data } = await api.post('/client', client);
-
-    //   console.log('Response: ');
-    //   console.log(data);
-
-    //   if (data.status === 'success') {
-    //     setPosition(() => position + 1);
-    //     reset({
-    //       show_id: '',
-    //       name: '',
-    //       rg: '',
-    //     })
-    //   }
-
-    //   if (data.status === 'expired') {
-    //     reset({
-    //       cpf: '',
-    //       show_id: '',
-    //       name: '',
-    //       rg: '',
-    //     })
-    //   }
-
-    //   setStatusMessage(data.message)
-    // } catch (error) {
-    //   console.log(error);
-    // }
-  }
-
-  if (position === 3) {
-    navigate('/success')
   }
 
   return (
     <div className="box">
       <form action="">
-
 
         <fieldset>
 
@@ -250,7 +173,7 @@ export default function Form() {
           <br />
 
           {
-            statusShow1.message ? <h3 className='title'> {statusShow1.message} </h3> : null
+            statusShow1 ? <h3 className='title'> {statusShow1} </h3> : null
           }
 
           <div>
@@ -320,7 +243,7 @@ export default function Form() {
           <br />
 
           {
-            statusShow2.message ? <h3 className='title'> {statusShow2.message} </h3> : null
+            statusShow2 ? <h3 className='title'> {statusShow2} </h3> : null
           }
 
           <div>
