@@ -10,7 +10,8 @@ module.exports = (sequelize, DataTypes) => {
   Client.init({
     show_id: DataTypes.UUID,
     name: DataTypes.STRING,
-    cpf: DataTypes.STRING,
+    rg: DataTypes.STRING,
+    phone: DataTypes.STRING,
   },
     {
       sequelize,

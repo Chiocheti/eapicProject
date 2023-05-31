@@ -2,42 +2,42 @@ const { v4: uuidv4 } = require('uuid');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
+  async up(queryInterface, Sequelize) {
     return queryInterface.bulkInsert('cpfs', [
       {
         id: uuidv4(),
-        cpf: '1111111111',
-        name: 'Gabriel',
+        cpf: '111.111.111-11',
+        used: 2
       },
       {
         id: uuidv4(),
-        cpf: '2222222222',
-        name: 'Samuel',
+        cpf: '222.222.222-22',
+        used: 2
       },
       {
         id: uuidv4(),
-        cpf: '3333333333',
-        name: 'Caio',
+        cpf: '333.333.333-33',
+        used: 2
       },
       {
         id: uuidv4(),
-        cpf: '4444444444',
-        name: 'Marcelo',
+        cpf: '444.444.444-44',
+        used: 2
       },
       {
         id: uuidv4(),
-        cpf: '5555555555',
-        name: 'Zé',
+        cpf: '555.555.555-55',
+        used: 2
       },
       {
         id: uuidv4(),
-        cpf: '6666666666',
-        name: 'Urubu',
+        cpf: '666.666.666-66',
+        used: 2
       },
     ])
   },
 
-  async down (queryInterface, Sequelize) {
+  async down(queryInterface, Sequelize) {
     return queryInterface.bulkDelete('shows', null, {});
   }
 };
