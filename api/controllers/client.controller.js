@@ -15,26 +15,32 @@ const clientController = {
     }
   },
 
+  async byShow(req, res) {
+
+    const { show } = req.body;
+
+    try {
+      const clients = await Client.findAll({where: {show_id: show}, order: ['name'] });
+
+      return res.status(200).json(clients);
+    } catch (error) {
+
+      console.log(error);
+      return res.status(500).json({ message: 'Server error:', error });
+    }
+  },
+
   async post(req, res) {
 
     const { cpf, ...client } = req.body;
     const { show_id } = client;
-    console.log("Cpf: ");
-    console.log(cpf);
-
-    console.log("Client: ");
-    console.log(client);
 
     try {
 
       const findCpf = await Cpf.findOne({ where: { cpf: cpf } });
-      console.log('findCpf: ')
-      console.log(findCpf)
 
       if (findCpf !== null) {
         const { dataValues } = findCpf;
-        console.log('DataValues: ')
-        console.log(dataValues)
 
         if (dataValues.used > 0) {
           const findShow = await Show.findOne({ where: { id: show_id, } });
@@ -50,12 +56,8 @@ const clientController = {
             dataValues.used -= 1;
             await Cpf.update(dataValues, { where: { cpf: cpf } });
 
-            const createdClient = await Client.create(client);
+            await Client.create(client);
 
-            console.log("Response: ");
-            console.log(createdClient);
-
-            console.log("Success");
             return res.status(200).json({ message: 'Entrada Registrada', status: 'success' });
           }
 

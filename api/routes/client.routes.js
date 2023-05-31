@@ -6,5 +6,6 @@ const clientRoutes = Router();
 
 clientRoutes.get('/', clientController.index);
 clientRoutes.post('/', clientController.post);
+clientRoutes.post('/show', clientController.byShow);
 
 module.exports = clientRoutes;
