@@ -5,36 +5,6 @@ import { api } from '../services/api';
 function Teste() {
 
   const [planilha, setPlanilha] = useState();
-  const [cpfList, setCpfList] = useState();
-
-  function baixarPlanilha() {
-    const wb = XLSX.utils.book_new();
-
-    wb.Props = {
-      Title: 'Relatório',
-      Subject: 'Teste',
-      Author: 'Chiocheti',
-      CreatedDate: new Date(),
-    };
-
-    wb.SheetNames.push('Relatório 1');
-
-    const data = [
-      ['Nome', 'CPF'],
-      ['Caio', '11111'],
-      ['Gabriel', '22222'],
-      ['Marcelo', '33333'],
-      ['Samuel', '44444'],
-      ['Zé', '55555'],
-      ['Urubu', '66666'],
-    ];
-
-    const ws = XLSX.utils.aoa_to_sheet(data);
-
-    wb.Sheets['Relatório 1'] = ws;
-
-    XLSX.writeFile(wb, 'teste.xlsx', { bookType: 'xlsx', type: 'binary' });
-  }
 
   function lerPlanilha(event) {
     const file = event.target.files[0];
@@ -58,28 +28,12 @@ function Teste() {
   }
 
   function salvarPlanilha() {
-    let namePosition = '';
-    let cpfPosition = '';
-
-    for (let i = 0; i < planilha[0].length; i++) {
-      console.log("Planilha ->");
-      console.log(planilha[0][i]);
-
-      if (planilha[0][i] === "Nome") {
-        namePosition = i;
-      }
-      if (planilha[0][i] === "CPF") {
-        cpfPosition = i;
-      }
-    }
 
     planilha.shift();
 
-    planilha.forEach(async (line) => {
-      const lineName = line[namePosition];
-      const lineCpf = line[cpfPosition];
+    planilha.forEach(async (cpf) => {
       try {
-        const { data } = await api.post('/cpf', { name: lineName, cpf: lineCpf });
+        const { data } = await api.post('/cpf', { cpf: cpf[0] });
         console.log(data);
       } catch (error) {
         console.log(error);
@@ -87,68 +41,70 @@ function Teste() {
     });
   }
 
-  async function buscarNovaPlanilha() {
-    try {
-      const { data } = await api.get('/cpf');
-      setCpfList(() => data);
-      console.log(cpfList)
-    } catch (error) {
-      console.log(error);
-    }
+  async function findClients(id) {
+    const show = id;
+    const { data } = await api.post('/client/show', { show });
+
+    return data;
   }
 
-  function salvarNovaPlanilha() {
-    const data = [];
-    data.push(['Nome', 'Cpf'])
-    cpfList.forEach((line) => {
-      data.push([line.name, line.cpf])
+  function gerarArray(clientList) {
+    let array = [['Nome', 'Rg']];
+    clientList.forEach((client) => {
+
+      array.push([client.name, client.rg])
+    });
+    return array;
+  }
+
+  async function writeWorkBook(sheetData) {
+
+    let workbook = XLSX.utils.book_new();
+
+    await sheetData.forEach((sheet) => {
+      const worksheet = XLSX.utils.aoa_to_sheet(sheet.data);
+      XLSX.utils.book_append_sheet(workbook, worksheet, sheet.name);
     });
 
-    console.log(data);
+    XLSX.writeFile(workbook, 'Relatório.xlsx', { bookType: 'xlsx', type: 'binary' });
+  }
 
-    const wb = XLSX.utils.book_new();
+  async function gerarRelatorio() {
+    let { data } = await api.get('/show');
 
-    wb.Props = {
-      Title: 'ListaEntrada',
-      Subject: 'Teste',
-      Author: 'Chiocheti',
-      CreatedDate: new Date(),
-    }
+    let list = [];
 
-    wb.SheetNames.push('Lista 01');
+    await data.forEach(async (element) => {
+      let clientList = await findClients(element.id);
 
-    const ws = XLSX.utils.aoa_to_sheet(data);
+      let array = gerarArray(clientList);
 
-    wb.Sheets['Lista 01'] = ws;
+      list.push({
+        data: array,
+        name: element.showName,
+      });
 
-    XLSX.writeFile(wb, 'Planilha_Completa.xlsx', { bookType: 'xlsx', type: 'binary' });
+      if (list.length === 6) {
+        writeWorkBook(list);
+      }
+    });
   }
 
   return (
     <>
       <div>
+        <input type="file" onChange={() => lerPlanilha(event)} />
+      </div>
 
-        <button onClick={baixarPlanilha}>
-          Baixar planilha
-        </button>
-
-        <button onClick={() => console.log(planilha[1])}>
-          Mostrar Data
-        </button>
-
+      <div>
         <button onClick={() => salvarPlanilha()}>
-          Salvar Data
+          Salvar Cpfs
         </button>
       </div>
 
-      <input type="file" onChange={() => lerPlanilha(event)} />
-
       <div>
-        <button onClick={buscarNovaPlanilha}>
-          Buscar nova planilha
-        </button>
-        <button onClick={salvarNovaPlanilha}>
-          Salvar nova planilha
+        <button onClick={gerarRelatorio}>
+          Gerar Relatório
         </button>
       </div>
     </>
