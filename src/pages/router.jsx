@@ -2,7 +2,6 @@ import { Routes as Switch, Route } from 'react-router-dom';
 
 import Form from './formPage';
 import Teste from './testePage';
-import Success from './successPage';
 
 export default function Routes() {
   return (
@@ -10,7 +9,6 @@ export default function Routes() {
       <Switch>
         <Route path='/' exact element={<Form />} />
         <Route path='/teste' exact element={<Teste />} />
-        <Route path='/success' exact element={<Success />} />
       </Switch>
     </>
   )
