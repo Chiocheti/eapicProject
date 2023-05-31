@@ -6,7 +6,7 @@ const cpfController = {
 
     async index(req, res) {
         try {
-            const cpfs = await Cpf.findAll({order: ['name']});
+            const cpfs = await Cpf.findAll();
 
             return res.status(200).json(cpfs);
         }
@@ -16,10 +16,10 @@ const cpfController = {
             return res.status(500).json({ message: 'Server error:', error });
         }
     },
-    
+
     async search(req, res) {
         const {cpf} = req.body;
-        
+
         try {
             const findCpf = await Cpf.findOne({ where: { cpf: cpf } });
 
