@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     show_id: DataTypes.UUID,
     name: DataTypes.STRING,
     rg: DataTypes.STRING,
+    phone: DataTypes.STRING,
   },
     {
       sequelize,

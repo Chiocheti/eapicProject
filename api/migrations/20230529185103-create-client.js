@@ -25,10 +25,12 @@ module.exports = {
       rg: {
         allowNull: false,
         type: Sequelize.STRING,
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
       },
       name: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      phone: {
         allowNull: false,
         type: Sequelize.STRING
       },
