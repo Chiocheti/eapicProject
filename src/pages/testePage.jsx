@@ -27,18 +27,27 @@ function Teste() {
     reader.readAsArrayBuffer(file);
   }
 
-  function salvarPlanilha() {
+  async function sendDataToServer(cpf) {
+    try {
+      const { data } = await api.post('/cpf', { cpf: cpf[0] });
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
+  async function salvarPlanilha() {
+    let count = 1;
+    const delay = 50;
     planilha.shift();
 
-    planilha.forEach(async (cpf) => {
-      try {
-        const { data } = await api.post('/cpf', { cpf: cpf[0] });
-        console.log(data);
-      } catch (error) {
-        console.log(error);
-      }
-    });
+    for (const cpf of planilha) {
+      await sendDataToServer(cpf);
+      await new Promise((resolve) => setTimeout(resolve, delay));
+      console.log('Numero: ' + count);
+      count++;
+    }
+    console.log('Fim');
   }
 
   async function findClients(id) {
