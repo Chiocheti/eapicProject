@@ -31,13 +31,13 @@ module.exports = {
       {
         id: uuidv4(),
         show_name: 'Luan Santana + Dennis DJ',
-        tickets_left: 800,
+        tickets_left: 1000,
         show_day: '2023-07-08'
       },
       {
         id: uuidv4(),
         show_name: 'Trio Parada Dura + Bruna Viola',
-        tickets_left: 800,
+        tickets_left: 1400,
         show_day: '2023-07-09'
       },
     ])
