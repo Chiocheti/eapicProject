@@ -7,7 +7,8 @@
     "server": "nodemon ./api/server.js",
     "build": "vite build",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "vercel-build": "npx sequelize db:migrate"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.1.0",
