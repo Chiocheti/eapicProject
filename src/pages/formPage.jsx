@@ -1,7 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useEffect, useState } from "react"
-import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import InputMask from 'react-input-mask';
 
@@ -42,16 +41,10 @@ export default function Form() {
     fetchData();
   }, []);
 
-  const navigate = useNavigate();
-
   const {
     register,
     handleSubmit,
     formState: { errors },
-    getValues,
-    setValues,
-    watch,
-    reset,
   } = useForm({
     resolver: yupResolver(schema),
   })
@@ -86,14 +79,8 @@ export default function Form() {
 
   async function validadeClient(data) {
     setStatusMessage();
-    setStatusShow1({
-      message: '',
-      status: false,
-    });
-    setStatusShow2({
-      message: '',
-      status: false,
-    });
+    setStatusShow1();
+    setStatusShow2();
 
     const { cpf, phone, show_id01, name01, rg01, show_id02, name02, rg02 } = data;
 
