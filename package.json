@@ -6,6 +6,7 @@
     "dev": "vite",
     "server": "nodemon ./api/server.js",
     "build:api": "node ./api/server.js",
+    "migrate": "npx sequelize-cli db:migrate",
     "build": "vite build",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
